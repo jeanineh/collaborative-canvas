@@ -1,0 +1,26 @@
+<!-- CURRENT LINK: https://countplayers-nwefewhroo.now.sh -->
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta name="viewport" content="user-scalable=no,initial-scale=1.0,maximum-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <!-- Notice that socket.io adds a path to its client-side js that is not in /public -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- This is my example client-side javascript that uses socket.io -->
+    <script src="javascripts/draw.js"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+  </head>
+  <body>
+    <div class="row">
+      <div class="col s7">
+        <p> There are currently <span id="numPlayers">no</span> players.</p>
+        <div id="welcome"></div>
+        <button id="clear">clear</button>
+        <canvas id="main" width="500" height="500"></canvas>
+      </div>
+    </div>
+  </body>
+</html>
