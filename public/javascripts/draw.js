@@ -45,14 +45,16 @@ window.onload = function() {
   var doOnMouseDown = function(event){                   
     event.preventDefault();  
     
-    isDrawing = true;
+    if($(this).attr('id') == 'main') {
+      isDrawing = true;
 
-    lastx = event.clientX - canvasleft;  // try substituting 1
-    lasty = event.clientY - canvastop;   // or 2 for index for multitouch
-    
-    socket.emit('drawDot', {'lastx':lastx, 'lasty':lasty});
+      lastx = event.clientX - canvasleft;  // try substituting 1
+      lasty = event.clientY - canvastop;   // or 2 for index for multitouch
+      
+      socket.emit('drawDot', {'lastx':lastx, 'lasty':lasty});
 
-    dot(lastx,lasty);
+      dot(lastx,lasty);
+    }
   }
 
   socket.on('drawingDot', function(data) {
@@ -62,19 +64,19 @@ window.onload = function() {
   canvas.addEventListener("mousedown", doOnMouseDown);
 
   var doOnMouseMove = function(event){                   
-    event.preventDefault();                 
-
-    var newx = event.clientX - canvasleft;
-    var newy = event.clientY - canvastop;
+    event.preventDefault();      
 
     if(isDrawing) {
-      line(lastx,lasty, newx,newy);
-    }
-    
-    socket.emit('drawLine', {'lastx':lastx, 'lasty':lasty, 'newx': newx, 'newy':newy });
+      var newx = event.clientX - canvasleft;
+      var newy = event.clientY - canvastop;
 
-    lastx = newx;
-    lasty = newy;
+      line(lastx,lasty, newx,newy);
+
+      socket.emit('drawLine', {'lastx':lastx, 'lasty':lasty, 'newx': newx, 'newy':newy });
+
+      lastx = newx;
+      lasty = newy;
+    }
   }
 
   canvas.addEventListener("mousemove", doOnMouseMove);
