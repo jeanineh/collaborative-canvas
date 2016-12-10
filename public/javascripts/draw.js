@@ -45,13 +45,9 @@ window.onload = function() {
 
   var doOnMouseDown = function(event){                 
     event.preventDefault();  
-<<<<<<< HEAD
     
     if($(this).attr('id') == 'main') {
       isDrawing = true;
-=======
-    isDrawing = true;
->>>>>>> chatroom
 
       lastx = event.clientX - canvasleft;  // try substituting 1
       lasty = event.clientY - canvastop;   // or 2 for index for multitouch
