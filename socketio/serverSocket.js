@@ -1,6 +1,6 @@
 exports.init = function(io) {
   var currentPlayers = 0; // keep track of the players
-
+  var players = {};
   // When a new connection is initiated
   io.sockets.on('connection', function(socket) {
     ++currentPlayers;
@@ -20,6 +20,18 @@ exports.init = function(io) {
 
     socket.on('drawDot', function(data) {
       socket.broadcast.emit('drawingDot', data);
+    });
+
+    socket.on('sendmessage', function(data) {
+      io.sockets.emit('updatechat', socket.player, data);
+    });
+
+    socket.on('newplayer', function(player) {
+      socket.player = player;
+      players[player] = player;
+      socket.emit('updatechat', 'SERVER', 'you have connected');
+      socket.broadcast.emit('updatechat', 'SERVER', player + ' has connected.');
+      io.sockets.emit('updateplayers', players);
     });
 
     /*

@@ -6,10 +6,43 @@ body {
 }
 
 canvas {
-  width: 500px; 
+  width: 700px; 
   height: 500px; 
   margin: auto; 
   background-color: #fff; 
   position: relative;
   cursor: url("/images/pencil.png"), auto;
+}
+
+#chatbox {
+  display: block;
+  height: 440px;
+  background-color: #fff;
+}
+
+#chat-section {
+  padding-top: 80px;
+  margin-right:0;
+  padding-right:0;
+}
+
+#msg {
+  max-width: 78%;
+  background-color: #fff;
+}
+
+#sendmsg {
+  display:inline-block;
+  padding: 10px
+}
+
+#users {
+  height: 440px;
+  background-color: #e5e5e5;
+  margin-top: 80px;
+  padding: 0;
+}
+
+#drawing-area {
+  padding-right: 0;
 }
