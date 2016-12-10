@@ -1,3 +1,4 @@
+
 window.onload = function() {
   var socket = io.connect();
   document.onmousedown = function(e){ e.preventDefault(); }
@@ -42,9 +43,8 @@ window.onload = function() {
     context.closePath();
   }
 
-  var doOnMouseDown = function(event){                   
+  var doOnMouseDown = function(event){                 
     event.preventDefault();  
-    
     isDrawing = true;
 
     lastx = event.clientX - canvasleft;  // try substituting 1
@@ -96,13 +96,37 @@ window.onload = function() {
   clear();
 
   // html js
+  socket.on('connect', function() {
+    socket.emit('newplayer', prompt("What's your name?"));
+  });
+
+  socket.on('updatechat', function(username, data) {
+    $('#chatbox').append('<b>' + username + ':</b>' + data + '<br/>');
+  });
+
+  socket.on('updateplayers', function(data) {
+    $('#users').empty();
+    $.each(data, function(key, value) {
+      $('#users').append('<div>' + key + '</div>');
+    });
+  });
+
+  $('#sendmsg').click(function() {
+    var message = $('#msg').val();
+    $('#msg').val('');
+    socket.emit('sendmessage', message);
+  });
+
+  $('#msg').keypress(function(e) {
+    if(e.which == 13) {
+      $(this).blur();
+      $('#sendmsg').focus().click();
+    }
+  });
+
   socket.on('players', function(data) {
     console.log(data);
     $("#numPlayers").text(data.number);
-  });
-
-  socket.on('welcome', function(data) {
-    $('#welcome').text('Welcome, player number '+data.number);
   });
 
 }
