@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <meta name="viewport" content="user-scalable=no,initial-scale=1.0,maximum-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+  </head>
+  <body>
+    <section id="registernow" class="valign-wrapper">
+      <div class="row s12 valign center-align">
+        <h1>Register</h1>
+        <span class="subhead">To start playing, create an account!</span><br/>
+        <form action="/register" method="POST">
+          <div>
+            <label>Username:</label>
+            <input type="text" name="username"/>
+          </div>
+          <div>
+            <label>Password:</label>
+            <input type="password" name="password"/>
+          </div>
+          <div>
+            <input type="submit" value="Register"/>
+          </div>
+        </form>
+      </div>
+    </section>
+  </body>
+</html>

@@ -1,6 +1,7 @@
 var morgan = require('morgan');
 var fs = require('fs');
 var path = require('path');
+var bodyParser = require('body-parser');
 
 var express = require('express');
 var app = express();
@@ -13,6 +14,9 @@ app.set('view engine', 'ejs');
 
 // Define how to log events
 app.use(morgan('tiny'));
+
+// parse application/x-www-form-urlencoded, with extended qs library
+app.use(bodyParser.urlencoded({extended:true}));
 
 // Load all routes in the directory 
 try {

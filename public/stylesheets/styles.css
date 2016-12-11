@@ -1,6 +1,5 @@
 
 body { 
-  padding: 10px; 
   margin: 0px; 
   background-color: #ccc; 
 }
@@ -18,10 +17,10 @@ canvas {
   display: block;
   height: 440px;
   background-color: #fff;
+  overflow-y: scroll;
 }
 
 #chat-section {
-  padding-top: 80px;
   margin-right:0;
   padding-right:0;
 }
@@ -39,10 +38,36 @@ canvas {
 #users {
   height: 440px;
   background-color: #e5e5e5;
-  margin-top: 80px;
   padding: 0;
+  overflow-y: scroll;
 }
 
 #drawing-area {
   padding-right: 0;
+}
+
+#intro {
+  height: 600px;
+  background-image: url("http://ichef-1.bbci.co.uk/news/976/media/images/83351000/jpg/_83351965_explorer273lincolnshirewoldssouthpicturebynicholassilkstone.jpg");
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.subhead {
+  font-size: 1.2em;
+  display: block;
+  text-align: center;
+  color: #fff;
+}
+
+h1 {
+  text-align: center;
+  color: #fff;
+  margin: 0 !important;
+}
+
+#new-word {
+  opacity: 0;
 }
