@@ -6,7 +6,8 @@ exports.init = function(io) {
   var playerTurn = 0;
   var gameState = 0;
   var currentCard = null;
-
+  var mongoModel = require("../models/mongoModel.js");
+  const collection = 'leaderboard';
   
   // When a new connection is initiated
   io.sockets.on('connection', function(socket) {
@@ -69,6 +70,13 @@ exports.init = function(io) {
       io.sockets.connected[players[nextPlayer].id].broadcast.emit('updatechat', 'SERVER', 'It\'s ' + nextPlayer + '\'s turn. Start guessing!');
       io.sockets.connected[players[nextPlayer].id].emit('turn', 'Player 1'); 
       io.sockets.emit('next player', playerTurn);
+    });
+
+    socket.on('game end', function() {
+      mongoModel.create(collection, players, function(result) {
+        var success = (result ? "Create successfull" : "Create unsuccessful");
+        console.log(success);
+      });
     });
 
     /*

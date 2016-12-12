@@ -185,7 +185,7 @@ window.onload = function() {
 
   $('#start').click(function() {
     socket.emit('game start');
-    $(this).css({opacity: 1});
+    $(this).css({opacity: 0});
   });
 
   socket.on('turn', function(data) {
@@ -198,6 +198,12 @@ window.onload = function() {
 
   socket.on('card chosen', function(data) {
     currentCard = data;
+  });
+
+  $('#stop').click(function() {
+    socket.emit('game end');
+    $(this).css({opacity: 0})
+    $('#start').css({opacity:1});
   });
 
 }
