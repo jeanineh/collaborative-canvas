@@ -140,6 +140,9 @@ window.onload = function() {
   });
 
   /* =========== actual game logic ============= */
+  var gameData = {totalRounds: 0};
+
+  loadDataFromLocalStorage();
   
   // 0 for not yet started, 1 for started
   var gameState = 0; 
@@ -179,7 +182,7 @@ window.onload = function() {
   $('#new-word').click(function() {
     currentCard = drawFromDeck();
     socket.emit('take turn', 'hi');
-    $('#gameword').append("<p>" + currentCard.word);
+    $('#gameword').html("<p>" + currentCard.word + "</p>");
     $(this).css({opacity: 0});
   });
 
@@ -189,6 +192,7 @@ window.onload = function() {
   });
 
   socket.on('turn', function(data) {
+    gameData.totalRounds+=1;
     $('#new-word').css({opacity: 1});
   });
 
@@ -202,9 +206,29 @@ window.onload = function() {
 
   $('#stop').click(function() {
     socket.emit('game end');
+    saveDataToLocalStorage();
     $(this).css({opacity: 0})
     $('#start').css({opacity:1});
   });
+
+  $('#stats').click(function() {
+    console.log("wat");
+    console.log(gameData);
+    $('#game-stats').append("<p>" + gameData.totalRounds + "</p>");
+  });
+
+  function saveDataToLocalStorage() {
+    // Turn scores into a JSON string, and store it to localStorage
+    localStorage.gameData = JSON.stringify(gameData);
+  }
+
+  function loadDataFromLocalStorage() {
+    // If scores have been stored to localStorage
+    if (localStorage.gameData && JSON.parse(localStorage.gameData)) {
+      // retrieve and parse the JSON
+      gameData = JSON.parse(localStorage.gameData);
+    }
+  }
 
 }
 
