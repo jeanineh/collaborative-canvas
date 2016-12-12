@@ -105,9 +105,10 @@ window.onload = function() {
   });
 
   socket.on('updatechat', function(username, data) {
-    if (gameState == 1) {
-      if (data.toLowerCase() == currentCard.word.toLowerCase() && gameState == 1) {
+    if (gameState == 1 && currentCard != null) {
+      if (data.toLowerCase() == currentCard.word.toLowerCase()) {
         socket.emit('give points', username, currentCard.points);
+        gameState = 0;
       }
     }
     
@@ -177,8 +178,9 @@ window.onload = function() {
 
   $('#new-word').click(function() {
     currentCard = drawFromDeck();
-    socket.emit('take turn');
+    socket.emit('take turn', 'hi');
     $('#gameword').append("<p>" + currentCard.word);
+    $(this).css({opacity: 0});
   });
 
   $('#start').click(function() {
@@ -192,6 +194,10 @@ window.onload = function() {
 
   socket.on('update game', function(data) {
     gameState = data;
+  });
+
+  socket.on('card chosen', function(data) {
+    currentCard = data;
   });
 
 }

@@ -5,6 +5,7 @@ exports.init = function(io) {
   // which player's turn is it?
   var playerTurn = 0;
   var gameState = 0;
+  var currentCard = null;
 
   
   // When a new connection is initiated
@@ -49,7 +50,7 @@ exports.init = function(io) {
       
     });
 
-    socket.on('take turn', function() {
+    socket.on('take turn', function(data) {
       gameState = 1;
       io.sockets.emit('update game', gameState);
     });
@@ -58,15 +59,17 @@ exports.init = function(io) {
       gameState = 0;
       io.sockets.emit('update game', gameState);
       players[player].score += points;
-      socket.emit('updateplayers', players);
+      io.sockets.emit('updateplayers', players);
       ++playerTurn;
+      if (playerTurn > connectedPlayers.length-1) {
+        playerTurn = 0;
+      }
       let nextPlayer = connectedPlayers[playerTurn];
-      io.sockets.connected[players[nextPlayer].id].emit('turn', 'Player 1'); 
       io.sockets.connected[players[nextPlayer].id].emit('updatechat', 'SERVER', 'Hey, it\'s your turn! Pick a word and start drawing.');
       io.sockets.connected[players[nextPlayer].id].broadcast.emit('updatechat', 'SERVER', 'It\'s ' + nextPlayer + '\'s turn. Start guessing!');
+      io.sockets.connected[players[nextPlayer].id].emit('turn', 'Player 1'); 
+      io.sockets.emit('next player', playerTurn);
     });
-
-
 
     /*
      * Upon this connection disconnecting (sending a disconnect event)
