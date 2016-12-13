@@ -2,8 +2,11 @@
 window.onload = function() {
   var socket = io.connect();
 
+  // +++++++++++++++++++++++++++++++++++++++++++
+  //                 CANVAS JS
+  // +++++++++++++++++++++++++++++++++++++++++++
   document.onmousedown = function(e){ e.preventDefault(); }
-  var canvas  = document.getElementById('main');
+  var canvas  = document.getElementById('board');
   var rect = canvas.getBoundingClientRect();
   var canvastop = rect.top;
   var canvasleft = rect.left; 
@@ -23,7 +26,7 @@ window.onload = function() {
 
   function clear() {
     context.fillStyle = "#ffffff";
-    context.rect(0, 0, 300, 300);
+    context.rect(0, 0, canvas.width, canvas.height);
     context.fill();
   }
 
@@ -44,27 +47,31 @@ window.onload = function() {
     context.closePath();
   }
 
+  // start drawing 
   var doOnMouseDown = function(event){                 
     event.preventDefault();  
     
-    if($(this).attr('id') == 'main') {
+    if($(this).attr('id') == 'board') {
       isDrawing = true;
 
-      lastx = event.clientX - canvasleft;  // try substituting 1
-      lasty = event.clientY - canvastop;   // or 2 for index for multitouch
+      lastx = event.clientX - canvasleft;
+      lasty = event.clientY - canvastop;  
       
+      // Tell connected clients that this player is drawing a dot
       socket.emit('drawDot', {'lastx':lastx, 'lasty':lasty});
 
       dot(lastx,lasty);
     }
   }
 
+  // Update canvas
   socket.on('drawingDot', function(data) {
     dot(data.lastx, data.lasty);
   });
 
   canvas.addEventListener("mousedown", doOnMouseDown);
 
+  // drawing
   var doOnMouseMove = function(event){                   
     event.preventDefault();      
 
@@ -74,6 +81,7 @@ window.onload = function() {
 
       line(lastx,lasty, newx,newy);
 
+      // Tell connected clients that this player is drawing
       socket.emit('drawLine', {'lastx':lastx, 'lasty':lasty, 'newx': newx, 'newy':newy });
 
       lastx = newx;
@@ -83,10 +91,12 @@ window.onload = function() {
 
   canvas.addEventListener("mousemove", doOnMouseMove);
 
+  // Update canvas
   socket.on('drawingLine', function(data) {
     line(data.lastx, data.lasty, data.newx, data.newy);
   });
 
+  // stop drawing
   var doOnMouseUp = function(event) {
     event.preventDefault();
     isDrawing = false;
@@ -94,62 +104,87 @@ window.onload = function() {
 
   canvas.addEventListener("mouseup", doOnMouseUp);
 
-  var clearButton = document.getElementById('clear');
-  clearButton.onclick = clear;
+  // Clear canvas
+  $('#clear').click(function() {
+    socket.emit('cleared canvas');
+    clear();
+  });
 
-  clear();
+  socket.on('clear canvas', function() {
+    clear();
+  });
 
-  // html js
+
+
+  // +++++++++++++++++++++++++++++++++++++++++++
+  //                 CHATBOX JS
+  // +++++++++++++++++++++++++++++++++++++++++++
+
+
+  // Get the player's username
   socket.on('connect', function() {
     socket.emit('newplayer', prompt("What's your name?"));
   });
 
+  // Received a message, update chatbox
   socket.on('updatechat', function(username, data) {
+    // Check if the round has started and whether we should vaidate guesses
     if (gameState == 1 && currentCard != null) {
       if (data.toLowerCase() == currentCard.word.toLowerCase()) {
         socket.emit('give points', username, currentCard.points);
+        // Round is over
         gameState = 0;
       }
     }
-    
-    $('#chatbox').append('<b>' + username + ':</b> ' + data + '<br/>');
+    // Update chatbox
+    $('#chatbox').append('<p><b>' + username + ':</b> ' + data + '</p>');
   });
 
+  // Update the list of users and their scores
   socket.on('updateplayers', function(data) {
     $('#users').empty();
     $.each(data, function(key, value) {
-      $('#users').append('<div>' + key + ': ' + data[key].score + '</div>');
+      $('#users').append('<li class="collection-item"><div>' + '<span class="teal-text">' + key + '</span>' + '<span class="secondary-content teal-text">' + data[key].score + '</span></li>');
     });
   });
 
+  // Send a message to the chat
   $('#sendmsg').click(function() {
     var message = $('#msg').val();
     $('#msg').val('');
     socket.emit('sendmessage', message);
   });
 
+  // Pressing enter also sends a message
   $('#msg').keypress(function(e) {
     if(e.which == 13) {
       $('#sendmsg').focus().click();
     }
   });
 
+  // Update how many players are currently connected
   socket.on('players', function(data) {
     console.log(data);
-    $("#numPlayers").text(data.number);
+    $("#numPlayers").text(data.number + ' players');
   });
 
-  /* =========== actual game logic ============= */
+  // +++++++++++++++++++++++++++++++++++++++++++
+  //           GAME LOGIC / GAME JS
+  // +++++++++++++++++++++++++++++++++++++++++++
+
+  // For localStorage. This stores the number of turns/rounds the player has played
   var gameData = {totalRounds: 0};
 
+  // Load the gameData from localStorage
   loadDataFromLocalStorage();
   
   // 0 for not yet started, 1 for started
   var gameState = 0; 
 
-  // the current word that's being drawn
+  // The current card that's being drawn
   var currentCard = null;
 
+  // Contains the list of cards to be used in gameplay
   var deck = [
     {"word": "horse", "points": 5, "level": "medium"},
     {"word": "photograph", "points": 5, "level": "medium"},
@@ -174,47 +209,59 @@ window.onload = function() {
     {"word": "tree", "points": 1, "level": "easy"},
   ];
 
+  // Selects a random card from the deck
   function drawFromDeck() {
     let index = Math.floor(Math.random() * deck.length);
     return deck[index];
   }
 
+  /* Draws a random card and displays it to the player,
+   * then disabled so they can't draw another card
+   */
   $('#new-word').click(function() {
     currentCard = drawFromDeck();
     socket.emit('take turn', 'hi');
     $('#gameword').html("<p>" + currentCard.word + "</p>");
-    $(this).css({opacity: 0});
+    $(this).toggleClass('disabled');
   });
 
+  // Starts the game, hides the start button, shows the 'End game' button
   $('#start').click(function() {
+    $(this).addClass('hide');
+    $('#stop').removeClass('hide');
     socket.emit('game start');
-    $(this).css({opacity: 0});
   });
 
-  socket.on('turn', function(data) {
+  // Disables the start button
+  socket.on('disable start', function() {
+    $('#start').addClass('disabled');
+  });
+
+  // When it's the player's turn, let them see their word/draw a card
+  socket.on('turn', function() {
+    socket.emit('cleared canvas');
     gameData.totalRounds+=1;
     $('#new-word').css({opacity: 1});
+    $('#new-word').removeClass('disabled');
   });
 
+  // Updates game state
   socket.on('update game', function(data) {
     gameState = data;
   });
 
-  socket.on('card chosen', function(data) {
-    currentCard = data;
-  });
-
+  // Ends the game, saves gameData to local storage
   $('#stop').click(function() {
     socket.emit('game end');
     saveDataToLocalStorage();
-    $(this).css({opacity: 0})
-    $('#start').css({opacity:1});
+    $(this).addClass('hide');
+    $('#start').removeClass('hide');
   });
 
+  // For displaying locally stored data
   $('#stats').click(function() {
-    console.log("wat");
     console.log(gameData);
-    $('#game-stats').append("<p>" + gameData.totalRounds + "</p>");
+    $('#game-stats').html(gameData.totalRounds);
   });
 
   function saveDataToLocalStorage() {
@@ -229,7 +276,6 @@ window.onload = function() {
       gameData = JSON.parse(localStorage.gameData);
     }
   }
-
 }
 
 

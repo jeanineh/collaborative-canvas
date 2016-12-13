@@ -2,9 +2,9 @@ var mongoModel = require("../models/mongoModel.js");
 const collection = 'leaderboard';
 // define the routes for this controller
 exports.init = function(app) {
+  app.get('/gameInfo', doRetrieve);
   app.get('/help', help);
   app.put('/leaderboard', doCreate); // CRUD Create
-  app.get('/leaderboard', doRetrieve); // CRUD Retrieve
   app.post('/leaderboard', doUpdate); // CRUD Update
   app.delete('/leaderboard', doDelete); // CRUD Delete
 }
@@ -27,7 +27,7 @@ doCreate = function(req, res) {
 doRetrieve = function(req, res) {
   mongoModel.retrieve(collection, req.query, function(modelData) {
     if (modelData.length) {
-      res.render('results', {title: 'Mongo Demo', obj: modelData});
+      res.render('results', {title: '', obj: modelData});
     }
     else {
       var message = "No documents with " + JSON.stringify(req.query) + " in collection " + collection + " found.";

@@ -4,37 +4,80 @@
   <head>
     <link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <!-- Notice that socket.io adds a path to its client-side js that is not in /public -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <!-- This is my example client-side javascript that uses socket.io -->
     <script src="javascripts/draw.js"></script>
   </head>
   <body>
-    <div id="game-info" class="row">
-      <p> There are currently <span id="numPlayers">no</span> players.</p>
-      <input id="start" type="button" value="Start Game">
-      <input id="stop" type="button" value="End Game">
-      <input id="new-word" type="button" value="Click here to see your word">
-      <div id="gameword"></div>
-      <div id="welcome"></div>
-      <a id="stats" class="waves-effect waves-light btn">See your stats</a>
-      <div id="game-stats"></div>
-      <button id="clear">clear</button>
-    </div>
-    <div class="row">
-      <div id="drawing-area" style="width:56%;" class="col s7">
-        <canvas id="main" width="700" height="500"></canvas>
-      </div>
-      <div style="width: 23%;" id="chat-section" class="col s3">
-        <div id="chatbox">
+    <header>
+      <nav>
+        <div class="nav-wrapper large-container">
+          <a href="#" class="brand-logo">DrawStuff</a>
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="/gameInfo">Game Info</a></li>
+          </ul>
         </div>
-        <div>
-          <input onclick="this.select()" id="msg" type="text" placeholder="Enter your answer here">
-          <input type="button" id="sendmsg" value="send">
+      </nav>
+    </header>
+    <section id="main" class="large-container">
+      <!-- top part with game state -->
+      <div id="game-info" class="row">
+        <div class="col s2">
+          <a id="start" class="waves-effect waves-light btn">Start Game</a>
+          <a id="stop" class="waves-effect waves-light btn hide">End Game</a>
+        </div>
+        <div class="col s7">
+          <div class="row v-align">
+            <div class="col s3"><i class="medium material-icons">face</i><span id="numPlayers">0 players</span></div>
+            <div class="col s3"><button id="clear" class="waves-effect waves-light btn">clear</button></div>
+            <div class="col s3">
+              <a href="#stats-modal" id="stats" class="waves-effect waves-light btn">Stats</a>
+              <div id="stats-modal" class="modal">
+                <div class="modal-content">
+                  <span id="game-stats"></span>
+                </div>
+              </div>
+            </div>
+            <div class="col s3">
+              <a href="#word-modal" id="new-word" class="waves-effect waves-light btn">See Word</a>
+              <div id="word-modal" class="modal">
+                <div class="modal-content">
+                  <span id="gameword"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col s3">
+        </div>
+      </div> <!-- end game info -->
+      <div class="row">
+        <!-- list of connected players -->
+        <div id="userbox" class="col s2">
+          <ul id="users" class="collection"></ul>
+        </div>
+        <!-- canvas -->        
+        <div id="drawing-area" style="width:56%;" class="col s7">
+          <canvas id="board" width="635" height="500"></canvas>
+        </div>
+        <!-- chat -->
+        <div id="chat-section" class="col s3">
+          <div id="chatbox">
+          </div>
+          <div>
+            <input onclick="this.select()" id="msg" type="text" placeholder="Enter your answer here">
+            <input type="button" id="sendmsg" value="send">
+          </div>
         </div>
       </div>
-      <div id="users" class="col s2"></div>
-    </div>
+    </section>
+    <script>
+      $(document).ready(function(){
+      // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+        $('.modal').modal();
+      });
+    </script>
   </body>
 </html>
