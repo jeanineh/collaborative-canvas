@@ -37,7 +37,7 @@ catch (exception) {
 }
 
 // Handle static files
-app.use(express.static(__dirname + '/public', { index: 'index.html'}));
+app.use(express.static(__dirname + '/public', { index: 'home.html'}));
 
 // Catch any routes not already handled with an error message
 app.use(function(req, res) {

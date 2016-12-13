@@ -54,8 +54,8 @@ window.onload = function() {
     if($(this).attr('id') == 'board') {
       isDrawing = true;
 
-      lastx = event.clientX - canvasleft;
-      lasty = event.clientY - canvastop;  
+      lastx = event.pageX - canvasleft;
+      lasty = event.pageY - canvastop;  
       
       // Tell connected clients that this player is drawing a dot
       socket.emit('drawDot', {'lastx':lastx, 'lasty':lasty});
@@ -76,8 +76,8 @@ window.onload = function() {
     event.preventDefault();      
 
     if(isDrawing) {
-      var newx = event.clientX - canvasleft;
-      var newy = event.clientY - canvastop;
+      var newx = event.pageX - canvasleft;
+      var newy = event.pageY - canvastop;
 
       line(lastx,lasty, newx,newy);
 

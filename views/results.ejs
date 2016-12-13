@@ -1,15 +1,50 @@
-<!DOCTYPE html>
+<!-- CURRENT LINK: https://countplayers-nwefewhroo.now.sh -->
+<!DOCTYPE HTML>
 <html>
   <head>
-    <title><%= title %></title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
   </head>
   <body>
-    <% if (obj.length) { %>
-      [</br>
-        <% obj.forEach(function(next) { %>
-        <%= JSON.stringify(next) %></br>
-      <% }); %>
-      ]
-    <% } %>
+    <header>
+      <nav>
+        <div class="nav-wrapper large-container">
+          <a href="/home.html" class="brand-logo">DrawStuff</a>
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="/gameInfo">Game Info</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <section id="main" class="large-container">
+      <div class="row big-intro">
+        <h1>Game Info</h1>
+        <span class="subhead">Check out all the games that have been played so far</span>
+      </div>
+      <div id="alist">
+        <div class="row">
+          <% if (obj.length) { %>
+            <% obj.forEach(function(game) { %>
+              <div class="col s12 m12 l3">
+                <div class="card">
+                  <div class="card-content teal-text">
+                    <span class="card-title">Game</span>
+                    <% for (var key in game) { %>
+                      <% let player = game[key] %>
+                      <% if (player.hasOwnProperty("username")) { %>
+                        <p><%= player.username + ": " + player.score %></p>
+                      <% } %>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            <% }); %>
+          <% } %>
+        </div>
+      </div>
+    </section>
   </body>
 </html>

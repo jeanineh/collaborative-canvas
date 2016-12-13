@@ -47,14 +47,22 @@ canvas {
 }
 
 #intro {
-  height: 600px;
-  background-image: url("http://ichef-1.bbci.co.uk/news/976/media/images/83351000/jpg/_83351965_explorer273lincolnshirewoldssouthpicturebynicholassilkstone.jpg");
+  min-height: 100%;
+  background-image: url("/background.png");
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
 
+#intro .row {
+  margin-bottom: auto;
+}
+
+.big-intro {
+  width: 100%;
+  margin-top: 50px;
+}
 .subhead {
   font-size: 1.2em;
   display: block;
