@@ -79,7 +79,8 @@ exports.init = function(io) {
       gameState = 0;
       io.sockets.emit('updatechat', 'SERVER', '<b class="teal-text">' + player + ' got it! ' + points + ' points awarded. </b>');
       io.sockets.emit('update game', gameState);
-      players[player].score += points;
+      players[connectedPlayers[playerTurn]].score += points // person drawing gets points
+      players[player].score += points; // person guessed correctly gets points
       io.sockets.emit('updateplayers', players);
       ++playerTurn;
       // Back to the first player
