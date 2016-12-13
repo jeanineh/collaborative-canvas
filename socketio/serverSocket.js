@@ -77,6 +77,7 @@ exports.init = function(io) {
     */
     socket.on('give points', function(player, points) {
       gameState = 0;
+      io.sockets.emit('updatechat', 'SERVER', '<b class="teal-text">' + player + ' got it! ' + points + ' points awarded. </b>');
       io.sockets.emit('update game', gameState);
       players[player].score += points;
       io.sockets.emit('updateplayers', players);
