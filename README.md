@@ -14,4 +14,4 @@ npm start
 You're all set!
 
 ### Demo:
-https://countplayers-hzpybaoqkh.now.sh
+https://countplayers-jocuttskwb.now.sh/
